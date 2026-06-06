@@ -3,118 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1920">
-<title>Menu - Navy</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --navy:#1a1f3a;
-  --cream:#e8e0d5;
-  --red:#c0392b;
-  --white:#ffffff;
-  --dark:#111827;
-}
-html,body{width:1920px;height:1080px;overflow:hidden;background:var(--cream);font-family:'Montserrat',sans-serif;}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#e8e0d5;font-family:'Open Sans',sans-serif;}
+#menu-view{width:1920px;height:1080px;display:flex;flex-direction:column;}
 
-#menu-view{width:1920px;height:1080px;display:grid;grid-template-columns:320px 1fr;grid-template-rows:1fr;}
+.header{background:#1a1f3a;padding:12px 48px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.rest-name{font-family:'Oswald',sans-serif;font-size:62px;font-weight:700;color:#ffffff;letter-spacing:2px;text-transform:uppercase;line-height:1;}
+.rest-info{text-align:right;font-size:20px;color:rgba(255,255,255,0.85);line-height:1.6;font-weight:600;}
 
-/* LEFT SIDEBAR */
-.sidebar{background:var(--navy);display:flex;flex-direction:column;padding:40px 32px;position:relative;overflow:hidden;}
-.sidebar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:45%;background:#111827;}
+.progress-wrap{height:5px;background:rgba(0,0,0,0.15);flex-shrink:0;}
+.progress-fill{height:100%;background:#c0392b;width:0%;transition:width linear;}
 
-.logo-area{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:32px;}
-.logo-icon{width:70px;height:70px;border:3px solid rgba(255,255,255,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;margin-bottom:16px;}
-.logo-sub{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.6);font-weight:400;margin-bottom:4px;}
-.logo-main{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:white;line-height:1;letter-spacing:2px;}
+.page-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;overflow:hidden;border-top:3px solid #1a1f3a;}
 
-.sidebar-img-area{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;gap:16px;margin-bottom:24px;}
-.img-placeholder{border-radius:12px;overflow:hidden;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);}
-.img-placeholder:first-child{height:160px;}
-.img-placeholder:last-child{height:140px;}
+.quadrant{padding:10px 30px;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.quadrant:nth-child(1){border-right:3px solid #1a1f3a;border-bottom:3px solid #1a1f3a;}
+.quadrant:nth-child(2){border-bottom:3px solid #1a1f3a;}
+.quadrant:nth-child(3){border-right:3px solid #1a1f3a;}
 
-.sidebar-contact{position:relative;z-index:1;text-align:center;}
-.contact-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:6px;}
-.contact-phone{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:white;margin-bottom:8px;}
-.contact-addr{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;}
+.cat-banner{display:inline-flex;align-items:center;margin-bottom:6px;flex-shrink:0;}
+.banner-left{width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-right:22px solid #1a1f3a;}
+.banner-mid{background:#1a1f3a;padding:5px 20px;font-family:'Oswald',sans-serif;font-size:32px;font-weight:700;color:#ffffff;text-transform:uppercase;letter-spacing:2px;}
+.banner-right{width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-left:22px solid #1a1f3a;}
 
-/* PROGRESS */
-.progress-wrap{position:absolute;bottom:0;left:320px;right:0;height:4px;background:rgba(0,0,0,0.1);z-index:10;}
-.progress-fill{height:100%;background:var(--red);width:0%;transition:width linear;}
+.price-header{display:flex;justify-content:flex-end;margin-bottom:2px;flex-shrink:0;}
+.ph-label{font-size:17px;font-weight:700;color:#C0392B;width:100px;text-align:center;}
 
-/* RIGHT CONTENT */
-.right-content{background:var(--cream);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;position:relative;}
-
-/* Quadrant */
-.quadrant{padding:28px 36px;display:flex;flex-direction:column;overflow:hidden;position:relative;}
-.quadrant:nth-child(1){border-right:2px solid rgba(0,0,0,0.1);border-bottom:2px solid rgba(0,0,0,0.1);}
-.quadrant:nth-child(2){border-bottom:2px solid rgba(0,0,0,0.1);}
-.quadrant:nth-child(3){background:var(--navy);border-right:2px solid rgba(255,255,255,0.1);}
-.quadrant:nth-child(4){background:var(--navy);}
-
-/* Category title */
-.cat-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;}
-.cat-title.light{color:var(--cream);}
-.cat-divider{width:60px;height:3px;background:var(--dark);margin-bottom:14px;flex-shrink:0;}
-.cat-divider.light{background:rgba(255,255,255,0.3);}
-
-/* Items */
 .items-wrap{display:flex;flex-direction:column;flex:1;min-height:0;}
-.menu-item{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.08);flex:1;min-height:0;padding:3px 0;gap:12px;}
-.menu-item.light{border-bottom-color:rgba(255,255,255,0.1);}
+.menu-item{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(26,31,58,0.15);flex:1;min-height:0;padding:4px 0;}
 .menu-item:last-child{border-bottom:none;}
-.item-left{flex:1;}
-.item-name{font-size:20px;font-weight:700;color:var(--dark);line-height:1.2;}
-.item-name.light{color:var(--white);}
-.item-desc{font-size:14px;color:#6b7280;font-style:italic;margin-top:2px;line-height:1.3;}
-.item-desc.light{color:rgba(255,255,255,0.5);}
-.price-badge{background:var(--red);color:white;padding:5px 14px;border-radius:4px;font-size:18px;font-weight:700;white-space:nowrap;flex-shrink:0;font-family:'Montserrat',sans-serif;}
-.price-badge.dark{background:var(--red);}
-
-/* Multi-price layout */
-.item-prices{display:flex;align-items:center;gap:6px;flex-shrink:0;}
-.price-cell{text-align:center;min-width:85px;}
-.price-val{font-size:20px;font-weight:700;color:var(--red);}
-.price-val.light{color:#ff6b6b;}
-
-/* Price header */
-.price-header{display:flex;justify-content:flex-end;margin-bottom:4px;flex-shrink:0;}
-.ph-label{font-size:13px;font-weight:700;color:var(--red);min-width:85px;text-align:center;}
-.ph-label.light{color:#ff6b6b;}
-
-/* Admin button hidden */
-#admin-btn-wrap{position:fixed;bottom:8px;right:12px;z-index:200;}
-.admin-btn{background:none;border:none;color:rgba(0,0,0,0.08);cursor:pointer;font-size:11px;}
+.item-left{flex:1;padding-right:10px;}
+.item-name{font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;color:#C0392B;text-transform:uppercase;line-height:1.2;}
+.item-desc{font-size:19px;color:#222;font-weight:600;line-height:1.3;margin-top:3px;}
+.item-prices{display:flex;align-items:center;flex-shrink:0;}
+.price-cell{width:100px;text-align:center;}
+.price-val{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;color:#C0392B;}
+.price-val.main{font-size:28px;}
 </style>
 </head>
 <body>
 <div id="menu-view">
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="logo-area">
-      <div class="logo-icon">🍽</div>
-      <div class="logo-sub">Food &amp; Beverage</div>
-      <div class="logo-main">MENU</div>
-    </div>
-    <div class="sidebar-img-area">
-      <div class="img-placeholder" style="height:180px;display:flex;align-items:center;justify-content:center;">
-        <span style="font-size:48px;">🥘</span>
-      </div>
-      <div class="img-placeholder" style="height:150px;display:flex;align-items:center;justify-content:center;">
-        <span style="font-size:48px;">🍖</span>
-      </div>
-    </div>
-    <div class="sidebar-contact">
-      <div class="contact-label">Reservation</div>
-      <div class="contact-phone" id="display-phone">(925) 932-8404</div>
-      <div class="contact-addr" id="display-addr">1512 Sunnyvale Ave<br>Walnut Creek, CA 94597</div>
-    </div>
+  <div class="header">
+    <div class="rest-name">Tajrish Bazaar &amp; Sunnyvale Market</div>
+    <div class="rest-info">1512 Sunnyvale Ave, Walnut Creek, CA 94597<br>☎ (925) 932-8404</div>
   </div>
-
-  <!-- RIGHT CONTENT -->
-  <div class="right-content" id="page-grid"></div>
+  <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="page-grid" id="page-grid"></div>
 </div>
-
-<div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
 
 <script>
 const SHEET_ID='1TrMRAAE4_VLlwB35qRV-uLTTlsfYrGJWek8C3f6kUIw';
@@ -143,7 +81,7 @@ async function fetchSheet(){
       const p2l=row.c[5]?String(row.c[5].v||'').trim():'';
       const p3raw=row.c[6]?String(row.c[6].v||'').trim():'';
       const p3l=row.c[7]?String(row.c[7].v||'').trim():'';
-      const fmt=v=>v&&!isNaN(v)?'$'+parseFloat(v).toFixed(2):v;
+      const fmt=v=>v&&!isNaN(v)?parseFloat(v).toFixed(2):v;
       if(!name||name.toLowerCase()==='name')return;
       if(!catMap[cat]){catMap[cat]=[];catOrder.push(cat);}
       catMap[cat].push({name,desc,price:fmt(p1raw),price2:fmt(p2raw),price2label:p2l,price3:fmt(p3raw),price3label:p3l});
@@ -151,7 +89,7 @@ async function fetchSheet(){
     allCategories=catOrder.map(c=>({name:c,items:catMap[c]}));
     if(activePage>=Math.ceil(allCategories.length/4))activePage=0;
     renderPage();
-  }catch(e){console.error(e);}
+  }catch(e){console.error('Sheet error:',e);}
 }
 
 function startAutoFetch(){
@@ -188,41 +126,31 @@ function renderPage(){
     for(let i=0;i<2;i++){
       const q=document.createElement('div');
       q.className='quadrant';
-      // alternate dark/light
-      if(i===1){q.style.background='var(--navy)';}
-      if(pageCats[i])q.appendChild(buildCatBlock(pageCats[i],i===1));
+      q.style.borderBottom='none';
+      if(i===0)q.style.borderRight='3px solid #1a1f3a';
+      if(pageCats[i])q.appendChild(buildCatBlock(pageCats[i]));
       grid.appendChild(q);
     }
-  } else {
+  }else{
     grid.style.gridTemplateRows='1fr 1fr';
     for(let i=0;i<4;i++){
       const q=document.createElement('div');
       q.className='quadrant';
-      const isLight=i>=2;
-      if(isLight){
-        q.style.background='var(--navy)';
-        if(i===2)q.style.borderRight='2px solid rgba(255,255,255,0.1)';
-      }
-      if(pageCats[i])q.appendChild(buildCatBlock(pageCats[i],isLight));
+      if(pageCats[i])q.appendChild(buildCatBlock(pageCats[i]));
       grid.appendChild(q);
     }
   }
   startSlideshow();
 }
 
-function buildCatBlock(cat,isLight){
+function buildCatBlock(cat){
   const wrap=document.createElement('div');
   wrap.style.cssText='display:flex;flex-direction:column;height:100%;';
 
-  // Title
-  const title=document.createElement('div');
-  title.className='cat-title'+(isLight?' light':'');
-  title.textContent=cat.name;
-  wrap.appendChild(title);
-
-  const divider=document.createElement('div');
-  divider.className='cat-divider'+(isLight?' light':'');
-  wrap.appendChild(divider);
+  const banner=document.createElement('div');
+  banner.className='cat-banner';
+  banner.innerHTML=`<div class="banner-left"></div><div class="banner-mid">${cat.name}</div><div class="banner-right"></div>`;
+  wrap.appendChild(banner);
 
   const hasP2=cat.items.some(i=>i.price2);
   const hasP3=cat.items.some(i=>i.price3);
@@ -232,9 +160,9 @@ function buildCatBlock(cat,isLight){
   if(hasP2){
     const ph=document.createElement('div');
     ph.className='price-header';
-    ph.innerHTML='<div style="flex:1"></div>';
-    if(p2labels.length)ph.innerHTML+=`<div class="ph-label${isLight?' light':''}">${p2labels[0]}</div>`;
-    if(hasP3&&p3labels.length)ph.innerHTML+=`<div class="ph-label${isLight?' light':''}">${p3labels[0]}</div>`;
+    ph.innerHTML='<div class="ph-label"></div>';
+    if(p2labels.length)ph.innerHTML+=`<div class="ph-label">${p2labels[0]}</div>`;
+    if(hasP3&&p3labels.length)ph.innerHTML+=`<div class="ph-label">${p3labels[0]}</div>`;
     wrap.appendChild(ph);
   }
 
@@ -243,20 +171,17 @@ function buildCatBlock(cat,isLight){
 
   cat.items.forEach(item=>{
     const el=document.createElement('div');
-    el.className='menu-item'+(isLight?' light':'');
-
-    let priceHTML='';
+    el.className='menu-item';
+    let ph='<div class="item-prices">';
     if(hasP2){
-      priceHTML='<div class="item-prices">';
-      priceHTML+=`<div class="price-cell"><span class="price-val${isLight?' light':''}">${item.price||''}</span></div>`;
-      priceHTML+=`<div class="price-cell"><span class="price-val${isLight?' light':''}">${item.price2||''}</span></div>`;
-      if(hasP3)priceHTML+=`<div class="price-cell"><span class="price-val${isLight?' light':''}">${item.price3||''}</span></div>`;
-      priceHTML+='</div>';
-    } else {
-      priceHTML=item.price?`<div class="price-badge">${item.price}</div>`:'';
+      ph+=`<div class="price-cell"><span class="price-val main">${item.price?'$'+item.price:''}</span></div>`;
+      ph+=`<div class="price-cell"><span class="price-val">${item.price2?'$'+item.price2:''}</span></div>`;
+      if(hasP3)ph+=`<div class="price-cell"><span class="price-val">${item.price3?'$'+item.price3:''}</span></div>`;
+    }else{
+      ph+=`<div class="price-cell"><span class="price-val main">${item.price?'$'+item.price:''}</span></div>`;
     }
-
-    el.innerHTML=`<div class="item-left"><div class="item-name${isLight?' light':''}">${item.name}</div>${item.desc?`<div class="item-desc${isLight?' light':''}">${item.desc}</div>`:''}</div>${priceHTML}`;
+    ph+='</div>';
+    el.innerHTML=`<div class="item-left"><div class="item-name">${item.name}</div>${item.desc?`<div class="item-desc">${item.desc}</div>`:''}</div>${ph}`;
     itemsWrap.appendChild(el);
   });
 
