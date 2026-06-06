@@ -70,69 +70,23 @@ async function fetchSheet(){
     const text=await res.text();
     const json=JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
     const rows=json.table.rows;
-
-    // Sheet format: col A = code (p-koobideh, p-koobideh-b, p-koobideh-s)
-    // col B = price, col C = name
-    // Group by base code (remove -b and -s suffixes)
-    // Category mapping based on prefixes
-    const catMapping = {
-      'p-koobideh':'Kabobs','p-thigh':'Kabobs','p-breast':'Kabobs',
-      'p-bone':'Kabobs','p-fillet':'Kabobs','p-sultani':'Kabobs','p-ch-koobideh':'Kabobs',
-      'p-gheymeh':'Stew','p-ghormeh':'Stew','p-karafs':'Stew',
-      'p-fesenjoon':'Stew','p-abgoosht':'Stew',
-      'p-addas':'Mix Rice','p-zereshk':'Mix Rice','p-tahchin':'Mix Rice',
-      'p-shirin':'Mix Rice','p-lobiapolo':'Mix Rice','p-organic':'Mix Rice','p-baghali':'Mix Rice',
-      'p-halim':'Single Food','p-ash':'Single Food','p-kofte':'Single Food',
-      'p-rice':'Single Food','p-lamb':'Single Food','p-tahdig':'Single Food','p-tom':'Single Food',
-      'p-beef-tongue':'Sandwiches','p-kotlet':'Sandwiches','p-kookoo':'Sandwiches',
-      'p-mortadella':'Sandwiches','p-olovie':'Sandwiches','p-sosis':'Sandwiches',
-      'p-koofte':'Sandwiches','p-ch-kabob':'Sandwiches','p-schnitzel':'Sandwiches',
-      'p-must':'Salad & Deli','p-sholezard':'Salad & Deli','p-shirazi':'Salad & Deli',
-      'p-kashk':'Salad & Deli','p-mirza':'Salad & Deli','p-chef':'Salad & Deli',
-      'p-greek':'Salad & Deli','p-zeyton':'Salad & Deli','p-olivie':'Salad & Deli',
-    };
-
-    // Build item map: baseCode -> {name, price, price2, price2label, price3, price3label}
-    const itemMap={};
-    const itemOrder=[];
-
+    const catMap={};const catOrder=[];
     rows.forEach(row=>{
       if(!row.c||!row.c[0]||!row.c[0].v)return;
-      const code=String(row.c[0].v).trim().toLowerCase();
-      const price=row.c[1]?String(row.c[1].v||'').replace('$','').trim():'';
-      const name=row.c[2]?String(row.c[2].v||'').trim():'';
-      if(!name||name==='نام غذا')return;
-
+      const cat=String(row.c[0].v).trim();
+      const name=row.c[1]?String(row.c[1].v||'').trim():'';
+      const desc=row.c[2]?String(row.c[2].v||'').trim():'';
+      const p1raw=row.c[3]?String(row.c[3].v||'').trim():'';
+      const p2raw=row.c[4]?String(row.c[4].v||'').trim():'';
+      const p2l=row.c[5]?String(row.c[5].v||'').trim():'';
+      const p3raw=row.c[6]?String(row.c[6].v||'').trim():'';
+      const p3l=row.c[7]?String(row.c[7].v||'').trim():'';
       const fmt=v=>v&&!isNaN(v)?parseFloat(v).toFixed(2):v;
-
-      if(code.endsWith('-b')){
-        const base=code.slice(0,-2);
-        if(itemMap[base])itemMap[base].price2=fmt(price),itemMap[base].price2label='With Bread';
-      } else if(code.endsWith('-s')){
-        const base=code.slice(0,-2);
-        if(itemMap[base])itemMap[base].price3=fmt(price),itemMap[base].price3label='Single';
-      } else {
-        itemMap[code]={name,price:fmt(price),price2:'',price2label:'',price3:'',price3label:''};
-        itemOrder.push(code);
-      }
+      if(!name||name.toLowerCase()==='name')return;
+      if(!catMap[cat]){catMap[cat]=[];catOrder.push(cat);}
+      catMap[cat].push({name,desc,price:fmt(p1raw),price2:fmt(p2raw),price2label:p2l,price3:fmt(p3raw),price3label:p3l});
     });
-
-    // Group into categories
-    const catMap={};const catOrder=[];
-    const catOrderFixed=['Kabobs','Mix Rice','Stew','Single Food','Sandwiches','Salad & Deli'];
-    catOrderFixed.forEach(c=>{catMap[c]=[];catOrder.push(c);});
-
-    itemOrder.forEach(code=>{
-      const item=itemMap[code];
-      let cat='Other';
-      for(const prefix of Object.keys(catMapping)){
-        if(code.startsWith(prefix)){cat=catMapping[prefix];break;}
-      }
-      if(!catMap[cat])catMap[cat]=[];
-      catMap[cat].push(item);
-    });
-
-    allCategories=catOrder.filter(c=>catMap[c]&&catMap[c].length>0).map(c=>({name:c,items:catMap[c]}));
+    allCategories=catOrder.map(c=>({name:c,items:catMap[c]}));
     if(activePage>=Math.ceil(allCategories.length/4))activePage=0;
     renderPage();
   }catch(e){console.error('Sheet error:',e);}
