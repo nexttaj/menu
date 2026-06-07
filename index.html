@@ -7,33 +7,33 @@
 <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:1920px;height:1080px;overflow:hidden;background:#e8e0d5;font-family:'Open Sans',sans-serif;}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#fff;font-family:'Open Sans',sans-serif;}
 #menu-view{width:1920px;height:1080px;display:flex;flex-direction:column;}
 
-.header{background:#1a1f3a;padding:12px 48px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.rest-name{font-family:'Abril Fatface',cursive;font-size:62px;font-weight:400;color:#ffffff;letter-spacing:2px;text-transform:uppercase;line-height:1;}
-.rest-info{text-align:right;font-size:20px;color:rgba(255,255,255,0.85);line-height:1.6;font-weight:600;}
+.header{background:#F7941D;padding:12px 48px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.rest-name{font-family:'Abril Fatface',cursive;font-size:62px;font-weight:400;color:#1a1a1a;letter-spacing:2px;text-transform:uppercase;line-height:1;}
+.rest-info{text-align:right;font-size:20px;color:#1a1a1a;line-height:1.6;font-weight:600;}
 
 .progress-wrap{height:5px;background:rgba(0,0,0,0.15);flex-shrink:0;}
 .progress-fill{height:100%;background:#c0392b;width:0%;transition:width linear;}
 
-.page-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;overflow:hidden;border-top:3px solid #1a1f3a;}
+.page-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;overflow:hidden;border-top:3px solid #F7941D;}
 
 .quadrant{padding:10px 30px;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
-.quadrant:nth-child(1){border-right:3px solid #1a1f3a;border-bottom:3px solid #1a1f3a;}
-.quadrant:nth-child(2){border-bottom:3px solid #1a1f3a;}
-.quadrant:nth-child(3){border-right:3px solid #1a1f3a;}
+.quadrant:nth-child(1){border-right:3px solid #F7941D;border-bottom:3px solid #F7941D;}
+.quadrant:nth-child(2){border-bottom:3px solid #F7941D;}
+.quadrant:nth-child(3){border-right:3px solid #F7941D;}
 
 .cat-banner{display:inline-flex;align-items:center;margin-bottom:6px;flex-shrink:0;}
-.banner-left{width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-right:22px solid #1a1f3a;}
-.banner-mid{background:#1a1f3a;padding:5px 20px;font-family:'Abril Fatface',cursive;font-size:32px;font-weight:400;color:#ffffff;text-transform:uppercase;letter-spacing:2px;}
-.banner-right{width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-left:22px solid #1a1f3a;}
+.banner-left{width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-right:22px solid #F7941D;}
+.banner-mid{background:#F7941D;padding:5px 20px;font-family:'Abril Fatface',cursive;font-size:32px;font-weight:400;color:#1a1a1a;text-transform:uppercase;letter-spacing:2px;}
+.banner-right{width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-left:22px solid #F7941D;}
 
 .price-header{display:flex;justify-content:flex-end;margin-bottom:2px;flex-shrink:0;}
 .ph-label{font-family:'Abril Fatface',cursive;font-size:16px;font-weight:400;color:#C0392B;width:100px;text-align:center;}
 
 .items-wrap{display:flex;flex-direction:column;flex:1;min-height:0;}
-.menu-item{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(26,31,58,0.15);flex:1;min-height:0;padding:4px 0;}
+.menu-item{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0e8e0;flex:1;min-height:0;padding:4px 0;}
 .menu-item:last-child{border-bottom:none;}
 .item-left{flex:1;padding-right:10px;}
 .item-name{font-family:'Abril Fatface',cursive;font-size:24px;font-weight:400;color:#C0392B;text-transform:uppercase;line-height:1.2;}
@@ -127,7 +127,7 @@ function renderPage(){
       const q=document.createElement('div');
       q.className='quadrant';
       q.style.borderBottom='none';
-      if(i===0)q.style.borderRight='3px solid #1a1f3a';
+      if(i===0)q.style.borderRight='3px solid #F7941D';
       if(pageCats[i])q.appendChild(buildCatBlock(pageCats[i]));
       grid.appendChild(q);
     }
