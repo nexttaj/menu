@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#fff;font-family:'Open Sans',sans-serif;}
+#menu-view{width:1920px;height:1080px;display:flex;flex-direction:column;}
+
+.header{background:#F7941D;padding:12px 48px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.rest-name{font-family:'Oswald',sans-serif;font-size:62px;font-weight:700;color:#1a1a1a;letter-spacing:2px;text-transform:uppercase;line-height:1;}
+.rest-info{text-align:right;font-size:20px;color:#1a1a1a;line-height:1.6;font-weight:600;}
+
+.progress-wrap{height:5px;background:rgba(0,0,0,0.15);flex-shrink:0;}
+.progress-fill{height:100%;background:#C0392B;width:0%;transition:width linear;}
+
+.page-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;overflow:hidden;border-top:3px solid #F7941D;}
+
+.quadrant{padding:10px 30px;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.quadrant:nth-child(1){border-right:3px solid #F7941D;border-bottom:3px solid #F7941D;}
+.quadrant:nth-child(2){border-bottom:3px solid #F7941D;}
+.quadrant:nth-child(3){border-right:3px solid #F7941D;}
+
+.cat-banner{display:inline-flex;align-items:center;margin-bottom:6px;flex-shrink:0;}
+.banner-left{width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-right:22px solid #F7941D;}
+.banner-mid{background:#F7941D;padding:5px 20px;font-family:'Oswald',sans-serif;font-size:32px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:2px;}
+.banner-right{width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-left:22px solid #F7941D;}
+
+.price-header{display:flex;justify-content:flex-end;margin-bottom:2px;flex-shrink:0;}
+.ph-label{font-size:17px;font-weight:700;color:#C0392B;width:100px;text-align:center;}
+
+.items-wrap{display:flex;flex-direction:column;flex:1;min-height:0;}
+.menu-item{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0e8e0;flex:1;min-height:0;padding:4px 0;}
+.menu-item:last-child{border-bottom:none;}
+.item-left{flex:1;padding-right:10px;}
+.item-name{font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;color:#C0392B;text-transform:uppercase;line-height:1.2;}
+.item-desc{font-size:19px;color:#222;font-weight:600;line-height:1.3;margin-top:3px;}
+.item-prices{display:flex;align-items:center;flex-shrink:0;}
+.price-cell{width:100px;text-align:center;}
+.price-val{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;color:#C0392B;}
+.price-val.main{font-size:28px;}
+</style>
+</head>
+<body>
+<div id="menu-view">
+  <div class="header">
+    <div class="rest-name">Tajrish Bazaar &amp; Sunnyvale Market</div>
+    <div class="rest-info">1512 Sunnyvale Ave, Walnut Creek, CA 94597<br>☎ (925) 932-8404</div>
+  </div>
+  <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="page-grid" id="page-grid"></div>
+</div>
+
+<script>
+const SHEET_ID='1TrMRAAE4_VLlwB35qRV-uLTTlsfYrGJWek8C3f6kUIw';
+const INTERVAL=30;
+
+let allCategories=[];
+let activePage=0;
+let slideshowTimer=null;
+let fetchTimer=null;
+
+async function fetchSheet(){
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1&cachebust=${Date.now()}`;
+  try{
+    const res=await fetch(url,{cache:'no-store'});
+    const text=await res.text();
+    const json=JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+    const rows=json.table.rows;
+
+    // Sheet format: col A = code (p-koobideh, p-koobideh-b, p-koobideh-s)
+    // col B = price, col C = name
+    // Group by base code (remove -b and -s suffixes)
+    // Category mapping based on prefixes
+    const catMapping = {
+      'p-koobideh':'Kabobs','p-thigh':'Kabobs','p-breast':'Kabobs',
+      'p-bone':'Kabobs','p-fillet':'Kabobs','p-sultani':'Kabobs','p-ch-koobideh':'Kabobs',
+      'p-gheymeh':'Stew','p-ghormeh':'Stew','p-karafs':'Stew',
+      'p-fesenjoon':'Stew','p-abgoosht':'Stew',
+      'p-addas':'Mix Rice','p-zereshk':'Mix Rice','p-tahchin':'Mix Rice',
+      'p-shirin':'Mix Rice','p-lobiapolo':'Mix Rice','p-organic':'Mix Rice','p-baghali':'Mix Rice',
+      'p-halim':'Single Food','p-ash':'Single Food','p-kofte':'Single Food',
+      'p-rice':'Single Food','p-lamb':'Single Food','p-tahdig':'Single Food','p-tom':'Single Food',
+      'p-beef-tongue':'Sandwiches','p-kotlet':'Sandwiches','p-kookoo':'Sandwiches',
+      'p-mortadella':'Sandwiches','p-olovie':'Sandwiches','p-sosis':'Sandwiches',
+      'p-koofte':'Sandwiches','p-ch-kabob':'Sandwiches','p-schnitzel':'Sandwiches',
+      'p-must':'Salad & Deli','p-sholezard':'Salad & Deli','p-shirazi':'Salad & Deli',
+      'p-kashk':'Salad & Deli','p-mirza':'Salad & Deli','p-chef':'Salad & Deli',
+      'p-greek':'Salad & Deli','p-zeyton':'Salad & Deli','p-olivie':'Salad & Deli',
+    };
+
+    // Build item map: baseCode -> {name, price, price2, price2label, price3, price3label}
+    const itemMap={};
+    const itemOrder=[];
+
+    rows.forEach(row=>{
+      if(!row.c||!row.c[0]||!row.c[0].v)return;
+      const code=String(row.c[0].v).trim().toLowerCase();
+      const price=row.c[1]?String(row.c[1].v||'').replace('$','').trim():'';
+      const name=row.c[2]?String(row.c[2].v||'').trim():'';
+      if(!name||name==='نام غذا')return;
+
+      const fmt=v=>v&&!isNaN(v)?parseFloat(v).toFixed(2):v;
+
+      if(code.endsWith('-b')){
+        const base=code.slice(0,-2);
+        if(itemMap[base])itemMap[base].price2=fmt(price),itemMap[base].price2label='With Bread';
+      } else if(code.endsWith('-s')){
+        const base=code.slice(0,-2);
+        if(itemMap[base])itemMap[base].price3=fmt(price),itemMap[base].price3label='Single';
+      } else {
+        itemMap[code]={name,price:fmt(price),price2:'',price2label:'',price3:'',price3label:''};
+        itemOrder.push(code);
+      }
+    });
+
+    // Group into categories
+    const catMap={};const catOrder=[];
+    const catOrderFixed=['Kabobs','Mix Rice','Stew','Single Food','Sandwiches','Salad & Deli'];
+    catOrderFixed.forEach(c=>{catMap[c]=[];catOrder.push(c);});
+
+    itemOrder.forEach(code=>{
+      const item=itemMap[code];
+      let cat='Other';
+      for(const prefix of Object.keys(catMapping)){
+        if(code.startsWith(prefix)){cat=catMapping[prefix];break;}
+      }
+      if(!catMap[cat])catMap[cat]=[];
+      catMap[cat].push(item);
+    });
+
+    allCategories=catOrder.filter(c=>catMap[c]&&catMap[c].length>0).map(c=>({name:c,items:catMap[c]}));
+    if(activePage>=Math.ceil(allCategories.length/4))activePage=0;
+    renderPage();
+  }catch(e){console.error('Sheet error:',e);}
+}
+
+function startAutoFetch(){
+  fetchSheet();
+  if(fetchTimer)clearInterval(fetchTimer);
+  fetchTimer=setInterval(fetchSheet,5*60*1000);
+}
+
+function startSlideshow(){
+  stopSlideshow();
+  const ms=INTERVAL*1000;
+  const fill=document.getElementById('progress-fill');
+  fill.style.transition='none';fill.style.width='0%';
+  requestAnimationFrame(()=>{fill.style.transition=`width ${ms}ms linear`;fill.style.width='100%';});
+  slideshowTimer=setInterval(()=>{
+    const total=Math.ceil(allCategories.length/4);
+    activePage=(activePage+1)%total;
+    renderPage();
+    fill.style.transition='none';fill.style.width='0%';
+    requestAnimationFrame(()=>{fill.style.transition=`width ${ms}ms linear`;fill.style.width='100%';});
+  },ms);
+}
+function stopSlideshow(){if(slideshowTimer)clearInterval(slideshowTimer);}
+
+function renderPage(){
+  const start=activePage*4;
+  const pageCats=allCategories.slice(start,start+4);
+  const grid=document.getElementById('page-grid');
+  grid.innerHTML='';
+
+  const count=pageCats.length;
+  if(count<=2){
+    grid.style.gridTemplateRows='1fr';
+    for(let i=0;i<2;i++){
+      const q=document.createElement('div');
+      q.className='quadrant';
+      q.style.borderBottom='none';
+      if(i===0)q.style.borderRight='3px solid #F7941D';
+      if(pageCats[i])q.appendChild(buildCatBlock(pageCats[i]));
+      grid.appendChild(q);
+    }
+  }else{
+    grid.style.gridTemplateRows='1fr 1fr';
+    for(let i=0;i<4;i++){
+      const q=document.createElement('div');
+      q.className='quadrant';
+      if(pageCats[i])q.appendChild(buildCatBlock(pageCats[i]));
+      grid.appendChild(q);
+    }
+  }
+  startSlideshow();
+}
+
+function buildCatBlock(cat){
+  const wrap=document.createElement('div');
+  wrap.style.cssText='display:flex;flex-direction:column;height:100%;';
+
+  const banner=document.createElement('div');
+  banner.className='cat-banner';
+  banner.innerHTML=`<div class="banner-left"></div><div class="banner-mid">${cat.name}</div><div class="banner-right"></div>`;
+  wrap.appendChild(banner);
+
+  const hasP2=cat.items.some(i=>i.price2);
+  const hasP3=cat.items.some(i=>i.price3);
+  const p2labels=[...new Set(cat.items.filter(i=>i.price2label).map(i=>i.price2label))];
+  const p3labels=[...new Set(cat.items.filter(i=>i.price3label).map(i=>i.price3label))];
+
+  if(hasP2){
+    const ph=document.createElement('div');
+    ph.className='price-header';
+    ph.innerHTML='<div class="ph-label"></div>';
+    if(p2labels.length)ph.innerHTML+=`<div class="ph-label">${p2labels[0]}</div>`;
+    if(hasP3&&p3labels.length)ph.innerHTML+=`<div class="ph-label">${p3labels[0]}</div>`;
+    wrap.appendChild(ph);
+  }
+
+  const itemsWrap=document.createElement('div');
+  itemsWrap.className='items-wrap';
+
+  cat.items.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='menu-item';
+    let ph='<div class="item-prices">';
+    if(hasP2){
+      ph+=`<div class="price-cell"><span class="price-val main">${item.price?'$'+item.price:''}</span></div>`;
+      ph+=`<div class="price-cell"><span class="price-val">${item.price2?'$'+item.price2:''}</span></div>`;
+      if(hasP3)ph+=`<div class="price-cell"><span class="price-val">${item.price3?'$'+item.price3:''}</span></div>`;
+    }else{
+      ph+=`<div class="price-cell"><span class="price-val main">${item.price?'$'+item.price:''}</span></div>`;
+    }
+    ph+='</div>';
+    el.innerHTML=`<div class="item-left"><div class="item-name">${item.name}</div>${item.desc?`<div class="item-desc">${item.desc}</div>`:''}</div>${ph}`;
+    itemsWrap.appendChild(el);
+  });
+
+  wrap.appendChild(itemsWrap);
+  return wrap;
+}
+
+startAutoFetch();
+</script>
+</body>
+</html>
