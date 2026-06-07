@@ -163,6 +163,8 @@ function showStep(idx){
 function showMenuPage(pageIndex, duration){
   document.getElementById('photo-view').style.display='none';
   document.getElementById('menu-view').style.display='flex';
+  document.getElementById('menu-view').style.zIndex='10';
+  document.getElementById('photo-view').style.zIndex='1';
 
   const start=pageIndex*4;
   const pageCats=allCategories.slice(start,start+4);
@@ -240,6 +242,8 @@ function buildCatBlock(cat){
 function showPhotoPage(imgFile, catName, duration){
   document.getElementById('menu-view').style.display='none';
   document.getElementById('photo-view').style.display='block';
+  document.getElementById('photo-view').style.zIndex='10';
+  document.getElementById('menu-view').style.zIndex='1';
 
   // Background
   document.getElementById('photo-bg').style.backgroundImage=`url('${imgFile}')`;
