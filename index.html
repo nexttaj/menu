@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#111;font-family:'Open Sans',sans-serif;}
+.view{width:1920px;height:1080px;position:absolute;top:0;left:0;}
+.view.hidden{display:none!important;}
+
+/* ===== MENU VIEW ===== */
+#menu-view{background:#fff;display:flex;flex-direction:column;}
+.header{background:#F7941D;padding:12px 48px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.rest-name{font-family:'Oswald',sans-serif;font-size:62px;font-weight:700;color:#1a1a1a;letter-spacing:2px;text-transform:uppercase;line-height:1;}
+.rest-info{text-align:right;font-size:20px;color:#1a1a1a;line-height:1.6;font-weight:600;}
+.progress-wrap{height:5px;background:rgba(0,0,0,0.15);flex-shrink:0;}
+.progress-fill{height:100%;background:#C0392B;width:0%;transition:width linear;}
+.page-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;overflow:hidden;border-top:3px solid #F7941D;}
+.quadrant{padding:10px 30px;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.quadrant:nth-child(1){border-right:3px solid #F7941D;border-bottom:3px solid #F7941D;}
+.quadrant:nth-child(2){border-bottom:3px solid #F7941D;}
+.quadrant:nth-child(3){border-right:3px solid #F7941D;}
+.cat-banner{display:inline-flex;align-items:center;margin-bottom:6px;flex-shrink:0;}
+.banner-left{width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-right:22px solid #F7941D;}
+.banner-mid{background:#F7941D;padding:5px 20px;font-family:'Oswald',sans-serif;font-size:32px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:2px;}
+.banner-right{width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-left:22px solid #F7941D;}
+.price-header{display:flex;justify-content:flex-end;margin-bottom:2px;flex-shrink:0;}
+.ph-label{font-size:17px;font-weight:700;color:#C0392B;width:100px;text-align:center;}
+.items-wrap{display:flex;flex-direction:column;flex:1;min-height:0;}
+.menu-item{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0e8e0;flex:1;min-height:0;padding:4px 0;}
+.menu-item:last-child{border-bottom:none;}
+.item-left{flex:1;padding-right:10px;}
+.item-name{font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;color:#C0392B;text-transform:uppercase;line-height:1.2;}
+.item-desc{font-size:19px;color:#222;font-weight:600;line-height:1.3;margin-top:3px;}
+.item-prices{display:flex;align-items:center;flex-shrink:0;}
+.price-cell{width:100px;text-align:center;}
+.price-val{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;color:#C0392B;}
+.price-val.main{font-size:28px;}
+
+/* ===== PHOTO VIEW ===== */
+#photo-view{overflow:hidden;}
+.photo-bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;}
+/* Price overlay - bottom bar */
+.price-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.82);padding:18px 60px;display:flex;align-items:center;gap:0;}
+.price-bar-title{font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;color:#F7941D;text-transform:uppercase;letter-spacing:2px;margin-right:48px;white-space:nowrap;}
+.price-bar-items{display:flex;flex:1;gap:32px;align-items:center;flex-wrap:wrap;}
+.price-bar-item{display:flex;align-items:center;gap:10px;}
+.price-bar-num{width:32px;height:32px;background:#E8602C;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;}
+.price-bar-name{font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;color:#fff;text-transform:uppercase;}
+.price-bar-price{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:#F7941D;margin-left:6px;}
+.photo-prog-wrap{position:absolute;top:0;left:0;right:0;height:5px;background:rgba(255,255,255,0.15);}
+.photo-prog-fill{height:100%;background:#E8602C;width:0%;transition:width linear;}
+</style>
+</head>
+<body>
+
+<div id="menu-view" class="view">
+  <div class="header">
+    <div class="rest-name">Tajrish Bazaar &amp; Sunnyvale Market</div>
+    <div class="rest-info">1512 Sunnyvale Ave, Walnut Creek, CA 94597<br>☎ (925) 932-8404</div>
+  </div>
+  <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="page-grid" id="page-grid"></div>
+</div>
+
+<div id="photo-view" class="view hidden">
+  <div class="photo-bg" id="photo-bg"></div>
+  <div class="price-bar">
+    <div class="price-bar-title" id="price-bar-title"></div>
+    <div class="price-bar-items" id="price-bar-items"></div>
+  </div>
+  <div class="photo-prog-wrap"><div class="photo-prog-fill" id="photo-prog-fill"></div></div>
+</div>
+
+<script>
+const SHEET_ID='1TrMRAAE4_VLlwB35qRV-uLTTlsfYrGJWek8C3f6kUIw';
+
+const SEQ=[
+  {type:'menu', page:0, dur:60000},
+  {type:'photo', img:'pic1.jpg', cat:'Kabobs', dur:15000},
+  {type:'menu', page:1, dur:15000},
+  {type:'menu', page:0, dur:60000},
+  {type:'photo', img:'pic2.jpg', cat:'Kabobs', dur:15000},
+  {type:'menu', page:1, dur:15000},
+  {type:'photo', img:'pic3.jpg', cat:'Stew', dur:15000},
+];
+
+let allCats=[];
+let seqIdx=0;
+let seqTimer=null;
+
+async function fetchSheet(){
+  try{
+    const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=menu-data+(1)&cachebust=${Date.now()}`;
+    const res=await fetch(url,{cache:'no-store'});
+    const text=await res.text();
+    const json=JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+    const rows=json.table.rows;
+    const catMap={};const catOrder=[];
+    rows.forEach(row=>{
+      if(!row.c||!row.c[0]||!row.c[0].v)return;
+      const cat=String(row.c[0].v).trim();
+      const name=row.c[1]?String(row.c[1].v||'').trim():'';
+      const desc=row.c[2]?String(row.c[2].v||'').trim():'';
+      const p1=row.c[3]?String(row.c[3].v||'').trim():'';
+      const p2=row.c[4]?String(row.c[4].v||'').trim():'';
+      const p2l=row.c[5]?String(row.c[5].v||'').trim():'';
+      const p3=row.c[6]?String(row.c[6].v||'').trim():'';
+      const p3l=row.c[7]?String(row.c[7].v||'').trim():'';
+      const fmt=v=>v&&!isNaN(v)?parseFloat(v).toFixed(2):v;
+      if(!name||name.toLowerCase()==='name')return;
+      if(!catMap[cat]){catMap[cat]=[];catOrder.push(cat);}
+      catMap[cat].push({name,desc,price:fmt(p1),price2:fmt(p2),price2label:p2l,price3:fmt(p3),price3label:p3l});
+    });
+    allCats=catOrder.map(c=>({name:c,items:catMap[c]}));
+  }catch(e){console.error(e);}
+}
+
+function nextStep(){seqIdx=(seqIdx+1)%SEQ.length;runStep();}
+
+function runStep(){
+  if(seqTimer)clearTimeout(seqTimer);
+  const s=SEQ[seqIdx];
+  if(s.type==='menu')showMenu(s.page,s.dur);
+  else showPhoto(s.img,s.cat,s.dur);
+  seqTimer=setTimeout(nextStep,s.dur);
+}
+
+function showMenu(pageIdx,dur){
+  document.getElementById('photo-view').classList.add('hidden');
+  document.getElementById('menu-view').classList.remove('hidden');
+  const grid=document.getElementById('page-grid');
+  grid.innerHTML='';
+  const pageCats=allCats.slice(pageIdx*4,(pageIdx+1)*4);
+  const count=pageCats.length;
+  if(count<=2){
+    grid.style.gridTemplateRows='1fr';
+    for(let i=0;i<2;i++){
+      const q=document.createElement('div');
+      q.className='quadrant';
+      q.style.borderBottom='none';
+      if(i===0)q.style.borderRight='3px solid #F7941D';
+      if(pageCats[i])q.appendChild(buildCat(pageCats[i]));
+      grid.appendChild(q);
+    }
+  }else{
+    grid.style.gridTemplateRows='1fr 1fr';
+    for(let i=0;i<4;i++){
+      const q=document.createElement('div');
+      q.className='quadrant';
+      if(pageCats[i])q.appendChild(buildCat(pageCats[i]));
+      grid.appendChild(q);
+    }
+  }
+  anim('progress-fill',dur);
+}
+
+function buildCat(cat){
+  const wrap=document.createElement('div');
+  wrap.style.cssText='display:flex;flex-direction:column;height:100%;';
+  const banner=document.createElement('div');
+  banner.className='cat-banner';
+  banner.innerHTML=`<div class="banner-left"></div><div class="banner-mid">${cat.name}</div><div class="banner-right"></div>`;
+  wrap.appendChild(banner);
+  const hasP2=cat.items.some(i=>i.price2);
+  const hasP3=cat.items.some(i=>i.price3);
+  const p2labels=[...new Set(cat.items.filter(i=>i.price2label).map(i=>i.price2label))];
+  const p3labels=[...new Set(cat.items.filter(i=>i.price3label).map(i=>i.price3label))];
+  if(hasP2){
+    const ph=document.createElement('div');
+    ph.className='price-header';
+    ph.innerHTML='<div class="ph-label"></div>';
+    if(p2labels.length)ph.innerHTML+=`<div class="ph-label">${p2labels[0]}</div>`;
+    if(hasP3&&p3labels.length)ph.innerHTML+=`<div class="ph-label">${p3labels[0]}</div>`;
+    wrap.appendChild(ph);
+  }
+  const iw=document.createElement('div');
+  iw.className='items-wrap';
+  cat.items.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='menu-item';
+    let ph='<div class="item-prices">';
+    if(hasP2){
+      ph+=`<div class="price-cell"><span class="price-val main">${item.price?'$'+item.price:''}</span></div>`;
+      ph+=`<div class="price-cell"><span class="price-val">${item.price2?'$'+item.price2:''}</span></div>`;
+      if(hasP3)ph+=`<div class="price-cell"><span class="price-val">${item.price3?'$'+item.price3:''}</span></div>`;
+    }else{
+      ph+=`<div class="price-cell"><span class="price-val main">${item.price?'$'+item.price:''}</span></div>`;
+    }
+    ph+='</div>';
+    el.innerHTML=`<div class="item-left"><div class="item-name">${item.name}</div>${item.desc?`<div class="item-desc">${item.desc}</div>`:''}</div>${ph}`;
+    iw.appendChild(el);
+  });
+  wrap.appendChild(iw);
+  return wrap;
+}
+
+function showPhoto(img,catName,dur){
+  document.getElementById('menu-view').classList.add('hidden');
+  document.getElementById('photo-view').classList.remove('hidden');
+  document.getElementById('photo-bg').style.backgroundImage=`url('${img}?v=${Date.now()}')`;
+  document.getElementById('price-bar-title').textContent=catName;
+  const cat=allCats.find(c=>c.name===catName);
+  const el=document.getElementById('price-bar-items');
+  el.innerHTML='';
+  if(cat){
+    cat.items.slice(0,6).forEach((item,i)=>{
+      const div=document.createElement('div');
+      div.className='price-bar-item';
+      div.innerHTML=`<div class="price-bar-num">${i+1}</div><div class="price-bar-name">${item.name}</div><div class="price-bar-price">${item.price?'$'+item.price:''}</div>`;
+      el.appendChild(div);
+    });
+  }
+  anim('photo-prog-fill',dur);
+}
+
+function anim(id,dur){
+  const el=document.getElementById(id);
+  el.style.transition='none';el.style.width='0%';
+  requestAnimationFrame(()=>{el.style.transition=`width ${dur}ms linear`;el.style.width='100%';});
+}
+
+async function init(){
+  await fetchSheet();
+  runStep();
+  setInterval(fetchSheet,5*60*1000);
+}
+init();
+</script>
+</body>
+</html>
