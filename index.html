@@ -7,10 +7,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:1920px;height:1080px;overflow:hidden;background:#fff;font-family:'Open Sans',sans-serif;}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#111;font-family:'Open Sans',sans-serif;}
+.view{width:1920px;height:1080px;position:absolute;top:0;left:0;}
+.view.hidden{display:none!important;}
 
 /* ===== MENU VIEW ===== */
-#menu-view{width:1920px;height:1080px;display:flex;flex-direction:column;position:absolute;top:0;left:0;}
+#menu-view{background:#fff;display:flex;flex-direction:column;}
 .header{background:#F7941D;padding:12px 48px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .rest-name{font-family:'Oswald',sans-serif;font-size:62px;font-weight:700;color:#1a1a1a;letter-spacing:2px;text-transform:uppercase;line-height:1;}
 .rest-info{text-align:right;font-size:20px;color:#1a1a1a;line-height:1.6;font-weight:600;}
@@ -39,29 +41,23 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#fff;font-family
 .price-val.main{font-size:28px;}
 
 /* ===== PHOTO VIEW ===== */
-#photo-view{width:1920px;height:1080px;position:absolute;top:0;left:0;display:none;background:#111;overflow:hidden;}
-.photo-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.85;}
-.photo-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 55%,rgba(0,0,0,0.1) 100%);}
-.photo-left{position:absolute;left:0;top:0;bottom:0;width:55%;display:flex;align-items:center;justify-content:center;}
-.photo-img-frame{width:90%;height:85%;background-size:cover;background-position:center;border:4px solid #E8602C;box-shadow:0 0 40px rgba(232,96,44,0.4);}
-.photo-right{position:absolute;right:0;top:0;bottom:0;width:44%;display:flex;flex-direction:column;justify-content:center;padding:60px 60px 60px 20px;}
-.photo-cat-title{font-family:'Oswald',sans-serif;font-size:64px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:3px;line-height:1;margin-bottom:16px;}
-.photo-divider{width:80px;height:4px;background:#E8602C;margin-bottom:36px;}
-.photo-item-row{display:flex;align-items:center;margin-bottom:20px;gap:20px;}
-.photo-num{width:48px;height:48px;background:#E8602C;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:#fff;flex-shrink:0;}
-.photo-item-name{font-family:'Oswald',sans-serif;font-size:28px;font-weight:600;color:#fff;flex:1;text-transform:uppercase;}
-.photo-item-price{font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;color:#F7941D;}
-.photo-logo{position:absolute;top:24px;left:24px;display:flex;align-items:center;gap:12px;}
-.photo-logo-icon{width:48px;height:48px;background:#E8602C;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;}
-.photo-logo-name{background:rgba(232,96,44,0.85);color:white;padding:6px 16px;font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;letter-spacing:1px;}
-.photo-progress{position:absolute;bottom:0;left:0;right:0;height:4px;background:rgba(255,255,255,0.2);}
-.photo-progress-fill{height:100%;background:#E8602C;width:0%;transition:width linear;}
+#photo-view{overflow:hidden;}
+.photo-bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;}
+/* Price overlay - bottom bar */
+.price-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.82);padding:18px 60px;display:flex;align-items:center;gap:0;}
+.price-bar-title{font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;color:#F7941D;text-transform:uppercase;letter-spacing:2px;margin-right:48px;white-space:nowrap;}
+.price-bar-items{display:flex;flex:1;gap:32px;align-items:center;flex-wrap:wrap;}
+.price-bar-item{display:flex;align-items:center;gap:10px;}
+.price-bar-num{width:32px;height:32px;background:#E8602C;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;}
+.price-bar-name{font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;color:#fff;text-transform:uppercase;}
+.price-bar-price{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:#F7941D;margin-left:6px;}
+.photo-prog-wrap{position:absolute;top:0;left:0;right:0;height:5px;background:rgba(255,255,255,0.15);}
+.photo-prog-fill{height:100%;background:#E8602C;width:0%;transition:width linear;}
 </style>
 </head>
 <body>
 
-<!-- MENU VIEW -->
-<div id="menu-view">
+<div id="menu-view" class="view">
   <div class="header">
     <div class="rest-name">Tajrish Bazaar &amp; Sunnyvale Market</div>
     <div class="rest-info">1512 Sunnyvale Ave, Walnut Creek, CA 94597<br>☎ (925) 932-8404</div>
@@ -70,50 +66,35 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#fff;font-family
   <div class="page-grid" id="page-grid"></div>
 </div>
 
-<!-- PHOTO VIEW -->
-<div id="photo-view">
+<div id="photo-view" class="view hidden">
   <div class="photo-bg" id="photo-bg"></div>
-  <div class="photo-overlay"></div>
-  <div class="photo-left">
-    <div class="photo-img-frame" id="photo-img-frame"></div>
+  <div class="price-bar">
+    <div class="price-bar-title" id="price-bar-title"></div>
+    <div class="price-bar-items" id="price-bar-items"></div>
   </div>
-  <div class="photo-right">
-    <div class="photo-cat-title" id="photo-cat-title"></div>
-    <div class="photo-divider"></div>
-    <div id="photo-items"></div>
-  </div>
-  <div class="photo-logo">
-    <div class="photo-logo-icon">🍽</div>
-    <div class="photo-logo-name">Tajrish Bazaar</div>
-  </div>
-  <div class="photo-progress"><div class="photo-progress-fill" id="photo-progress-fill"></div></div>
+  <div class="photo-prog-wrap"><div class="photo-prog-fill" id="photo-prog-fill"></div></div>
 </div>
 
 <script>
 const SHEET_ID='1TrMRAAE4_VLlwB35qRV-uLTTlsfYrGJWek8C3f6kUIw';
 
-// Sequence config
-// type: 'menu' = show menu page, duration in ms
-// type: 'photo' = show photo slide
-const SEQUENCE = [
-  {type:'menu', page:0, duration:60000},   // Menu page 1 — 1 min
-  {type:'photo', img:'pic1.jpg', cat:'Kabobs', duration:15000},  // Kabob Koobideh
-  {type:'menu', page:1, duration:15000},   // Menu page 2 — 15 sec
-  {type:'menu', page:0, duration:60000},   // Menu page 1 — 1 min
-  {type:'photo', img:'pic2.jpg', cat:'Kabobs', duration:15000},  // Chicken Kabob
-  {type:'menu', page:1, duration:15000},   // Menu page 2 — 15 sec
-  {type:'photo', img:'pic3.jpg', cat:'Stew', duration:15000},    // Stew
+const SEQ=[
+  {type:'menu', page:0, dur:60000},
+  {type:'photo', img:'pic1.jpg', cat:'Kabobs', dur:15000},
+  {type:'menu', page:1, dur:15000},
+  {type:'menu', page:0, dur:60000},
+  {type:'photo', img:'pic2.jpg', cat:'Kabobs', dur:15000},
+  {type:'menu', page:1, dur:15000},
+  {type:'photo', img:'pic3.jpg', cat:'Stew', dur:15000},
 ];
 
-let allCategories=[];
-let seqIndex=0;
+let allCats=[];
+let seqIdx=0;
 let seqTimer=null;
-let fetchTimer=null;
 
-// ===== FETCH SHEET =====
 async function fetchSheet(){
-  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=menu-data+(1)&cachebust=${Date.now()}`;
   try{
+    const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=menu-data+(1)&cachebust=${Date.now()}`;
     const res=await fetch(url,{cache:'no-store'});
     const text=await res.text();
     const json=JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
@@ -124,53 +105,36 @@ async function fetchSheet(){
       const cat=String(row.c[0].v).trim();
       const name=row.c[1]?String(row.c[1].v||'').trim():'';
       const desc=row.c[2]?String(row.c[2].v||'').trim():'';
-      const p1raw=row.c[3]?String(row.c[3].v||'').trim():'';
-      const p2raw=row.c[4]?String(row.c[4].v||'').trim():'';
+      const p1=row.c[3]?String(row.c[3].v||'').trim():'';
+      const p2=row.c[4]?String(row.c[4].v||'').trim():'';
       const p2l=row.c[5]?String(row.c[5].v||'').trim():'';
-      const p3raw=row.c[6]?String(row.c[6].v||'').trim():'';
+      const p3=row.c[6]?String(row.c[6].v||'').trim():'';
       const p3l=row.c[7]?String(row.c[7].v||'').trim():'';
       const fmt=v=>v&&!isNaN(v)?parseFloat(v).toFixed(2):v;
       if(!name||name.toLowerCase()==='name')return;
       if(!catMap[cat]){catMap[cat]=[];catOrder.push(cat);}
-      catMap[cat].push({name,desc,price:fmt(p1raw),price2:fmt(p2raw),price2label:p2l,price3:fmt(p3raw),price3label:p3l});
+      catMap[cat].push({name,desc,price:fmt(p1),price2:fmt(p2),price2label:p2l,price3:fmt(p3),price3label:p3l});
     });
-    allCategories=catOrder.map(c=>({name:c,items:catMap[c]}));
-  }catch(e){console.error('Sheet error:',e);}
+    allCats=catOrder.map(c=>({name:c,items:catMap[c]}));
+  }catch(e){console.error(e);}
 }
 
-// ===== SEQUENCE =====
-function startSequence(){
-  showStep(seqIndex);
-}
+function nextStep(){seqIdx=(seqIdx+1)%SEQ.length;runStep();}
 
-function showStep(idx){
+function runStep(){
   if(seqTimer)clearTimeout(seqTimer);
-  const step=SEQUENCE[idx];
-
-  if(step.type==='menu'){
-    showMenuPage(step.page, step.duration);
-  } else {
-    showPhotoPage(step.img, step.cat, step.duration);
-  }
-
-  seqTimer=setTimeout(()=>{
-    seqIndex=(idx+1)%SEQUENCE.length;
-    showStep(seqIndex);
-  }, step.duration);
+  const s=SEQ[seqIdx];
+  if(s.type==='menu')showMenu(s.page,s.dur);
+  else showPhoto(s.img,s.cat,s.dur);
+  seqTimer=setTimeout(nextStep,s.dur);
 }
 
-// ===== MENU PAGE =====
-function showMenuPage(pageIndex, duration){
-  document.getElementById('photo-view').style.display='none';
-  document.getElementById('menu-view').style.display='flex';
-  document.getElementById('menu-view').style.zIndex='10';
-  document.getElementById('photo-view').style.zIndex='1';
-
-  const start=pageIndex*4;
-  const pageCats=allCategories.slice(start,start+4);
+function showMenu(pageIdx,dur){
+  document.getElementById('photo-view').classList.add('hidden');
+  document.getElementById('menu-view').classList.remove('hidden');
   const grid=document.getElementById('page-grid');
   grid.innerHTML='';
-
+  const pageCats=allCats.slice(pageIdx*4,(pageIdx+1)*4);
   const count=pageCats.length;
   if(count<=2){
     grid.style.gridTemplateRows='1fr';
@@ -179,7 +143,7 @@ function showMenuPage(pageIndex, duration){
       q.className='quadrant';
       q.style.borderBottom='none';
       if(i===0)q.style.borderRight='3px solid #F7941D';
-      if(pageCats[i])q.appendChild(buildCatBlock(pageCats[i]));
+      if(pageCats[i])q.appendChild(buildCat(pageCats[i]));
       grid.appendChild(q);
     }
   }else{
@@ -187,18 +151,14 @@ function showMenuPage(pageIndex, duration){
     for(let i=0;i<4;i++){
       const q=document.createElement('div');
       q.className='quadrant';
-      if(pageCats[i])q.appendChild(buildCatBlock(pageCats[i]));
+      if(pageCats[i])q.appendChild(buildCat(pageCats[i]));
       grid.appendChild(q);
     }
   }
-
-  // Progress bar
-  const fill=document.getElementById('progress-fill');
-  fill.style.transition='none';fill.style.width='0%';
-  requestAnimationFrame(()=>{fill.style.transition=`width ${duration}ms linear`;fill.style.width='100%';});
+  anim('progress-fill',dur);
 }
 
-function buildCatBlock(cat){
+function buildCat(cat){
   const wrap=document.createElement('div');
   wrap.style.cssText='display:flex;flex-direction:column;height:100%;';
   const banner=document.createElement('div');
@@ -217,8 +177,8 @@ function buildCatBlock(cat){
     if(hasP3&&p3labels.length)ph.innerHTML+=`<div class="ph-label">${p3labels[0]}</div>`;
     wrap.appendChild(ph);
   }
-  const itemsWrap=document.createElement('div');
-  itemsWrap.className='items-wrap';
+  const iw=document.createElement('div');
+  iw.className='items-wrap';
   cat.items.forEach(item=>{
     const el=document.createElement('div');
     el.className='menu-item';
@@ -232,57 +192,42 @@ function buildCatBlock(cat){
     }
     ph+='</div>';
     el.innerHTML=`<div class="item-left"><div class="item-name">${item.name}</div>${item.desc?`<div class="item-desc">${item.desc}</div>`:''}</div>${ph}`;
-    itemsWrap.appendChild(el);
+    iw.appendChild(el);
   });
-  wrap.appendChild(itemsWrap);
+  wrap.appendChild(iw);
   return wrap;
 }
 
-// ===== PHOTO PAGE =====
-function showPhotoPage(imgFile, catName, duration){
-  document.getElementById('menu-view').style.display='none';
-  document.getElementById('photo-view').style.display='block';
-  document.getElementById('photo-view').style.zIndex='10';
-  document.getElementById('menu-view').style.zIndex='1';
-
-  // Background
-  document.getElementById('photo-bg').style.backgroundImage=`url('${imgFile}')`;
-  document.getElementById('photo-img-frame').style.backgroundImage=`url('${imgFile}')`;
-
-  // Title
-  document.getElementById('photo-cat-title').textContent=catName;
-
-  // Items from sheet
-  const cat=allCategories.find(c=>c.name===catName);
-  const itemsEl=document.getElementById('photo-items');
-  itemsEl.innerHTML='';
+function showPhoto(img,catName,dur){
+  document.getElementById('menu-view').classList.add('hidden');
+  document.getElementById('photo-view').classList.remove('hidden');
+  document.getElementById('photo-bg').style.backgroundImage=`url('${img}?v=${Date.now()}')`;
+  document.getElementById('price-bar-title').textContent=catName;
+  const cat=allCats.find(c=>c.name===catName);
+  const el=document.getElementById('price-bar-items');
+  el.innerHTML='';
   if(cat){
-    cat.items.slice(0,5).forEach((item,i)=>{
-      const row=document.createElement('div');
-      row.className='photo-item-row';
-      row.innerHTML=`
-        <div class="photo-num">${i+1}</div>
-        <div class="photo-item-name">${item.name}</div>
-        <div class="photo-item-price">${item.price?'$'+item.price:''}</div>
-      `;
-      itemsEl.appendChild(row);
+    cat.items.slice(0,6).forEach((item,i)=>{
+      const div=document.createElement('div');
+      div.className='price-bar-item';
+      div.innerHTML=`<div class="price-bar-num">${i+1}</div><div class="price-bar-name">${item.name}</div><div class="price-bar-price">${item.price?'$'+item.price:''}</div>`;
+      el.appendChild(div);
     });
   }
-
-  // Progress bar
-  const fill=document.getElementById('photo-progress-fill');
-  fill.style.transition='none';fill.style.width='0%';
-  requestAnimationFrame(()=>{fill.style.transition=`width ${duration}ms linear`;fill.style.width='100%';});
+  anim('photo-prog-fill',dur);
 }
 
-// ===== INIT =====
+function anim(id,dur){
+  const el=document.getElementById(id);
+  el.style.transition='none';el.style.width='0%';
+  requestAnimationFrame(()=>{el.style.transition=`width ${dur}ms linear`;el.style.width='100%';});
+}
+
 async function init(){
   await fetchSheet();
-  startSequence();
-  // Refresh sheet every 5 min
-  setInterval(async()=>{await fetchSheet();}, 5*60*1000);
+  runStep();
+  setInterval(fetchSheet,5*60*1000);
 }
-
 init();
 </script>
 </body>
