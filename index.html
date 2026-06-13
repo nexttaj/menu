@@ -90,12 +90,12 @@ const SHEET_ID='1TrMRAAE4_VLlwB35qRV-uLTTlsfYrGJWek8C3f6kUIw';
 
 const SEQ=[
   {type:'menu', page:0, dur:60000},
-  {type:'photo', img:'pic1.jpg', cat:'Kabobs', dur:15000, side:'left', exclude:[]},
+  {type:'photo', img:'pic1.jpg', cat:'Kabobs', dur:15000, include:['Koobideh + Rice','Fillet','Sultani']},
   {type:'menu', page:1, dur:15000},
   {type:'menu', page:0, dur:60000},
-  {type:'photo', img:'pic2.jpg', cat:'Kabobs', dur:15000, side:'right', exclude:['Koobideh','Sultani']},
+  {type:'photo', img:'pic2.jpg', cat:'Kabobs', dur:15000, include:['Chicken Thigh','Chicken Breast','Chicken Bone','Chicken Koobideh']},
   {type:'menu', page:1, dur:15000},
-  {type:'photo', img:'pic3.jpg', cat:'Stew', dur:15000, side:'left', exclude:['Abgoosht']},
+  {type:'photo', img:'pic3.jpg', cat:'Stew', dur:15000, include:['Gheymeh','Ghormeh','Karafs','Fesenjoon']},
 ];
 
 let allCats=[];
@@ -135,7 +135,7 @@ function runStep(){
   if(seqTimer)clearTimeout(seqTimer);
   const s=SEQ[seqIdx];
   if(s.type==='menu')showMenu(s.page,s.dur);
-  else showPhoto(s.img,s.cat,s.dur,s.side||null,s.exclude||[]);
+  else showPhoto(s.img,s.cat,s.dur,s.include||[]);
   seqTimer=setTimeout(nextStep,s.dur);
 }
 
@@ -208,7 +208,7 @@ function buildCat(cat){
   return wrap;
 }
 
-function showPhoto(img,catName,dur,side,excludeItems){
+function showPhoto(img,catName,dur,includeItems){
   document.getElementById('menu-view').classList.add('hidden');
   document.getElementById('photo-view').classList.remove('hidden');
   document.getElementById('photo-bg').style.backgroundImage=`url('${img}?v=${Date.now()}')`;
@@ -218,38 +218,22 @@ function showPhoto(img,catName,dur,side,excludeItems){
   const el=document.getElementById('price-bar-items');
   el.innerHTML='';
 
-  // Side panel
+  // Hide side panel always
   const sidePanel=document.getElementById('side-panel');
-  const sidePrices=document.getElementById('side-prices');
-  const sideTitle=document.getElementById('side-title');
-  sidePrices.innerHTML='';
+  if(sidePanel) sidePanel.style.display='none';
+  document.querySelector('.price-bar').style.display='flex';
 
-  if(side && cat){
-    sidePanel.style.display='flex';
-    sidePanel.style.left = side==='left' ? '0' : 'auto';
-    sidePanel.style.right = side==='right' ? '0' : 'auto';
-    sideTitle.textContent=catName;
-    let num=1;
-    cat.items.forEach(item=>{
-      if(excludeItems && excludeItems.some(e=>item.name.toLowerCase().includes(e.toLowerCase()))) return;
-      const row=document.createElement('div');
-      row.className='side-item-row';
-      row.innerHTML=`<div class="side-num">${num++}</div><div class="side-name">${item.name}</div><div class="side-price">${item.price?'$'+item.price:''}</div>`;
-      sidePrices.appendChild(row);
-    });
-    // hide bottom bar completely
-    document.querySelector('.price-bar').style.display='none';
-  } else {
-    sidePanel.style.display='none';
-    document.querySelector('.price-bar').style.display='flex';
-    if(cat){
-      cat.items.slice(0,6).forEach((item,i)=>{
-        const div=document.createElement('div');
-        div.className='price-bar-item';
-        div.innerHTML=`<div class="price-bar-num">${i+1}</div><div class="price-bar-name">${item.name}</div><div class="price-bar-price">${item.price?'$'+item.price:''}</div>`;
-        el.appendChild(div);
-      });
+  if(cat){
+    let items=cat.items;
+    if(includeItems && includeItems.length>0){
+      items=cat.items.filter(item=>includeItems.some(inc=>item.name.toLowerCase().includes(inc.toLowerCase())));
     }
+    items.forEach((item,i)=>{
+      const div=document.createElement('div');
+      div.className='price-bar-item';
+      div.innerHTML=`<div class="price-bar-num">${i+1}</div><div class="price-bar-name">${item.name}</div><div class="price-bar-price">${item.price?'$'+item.price:''}</div>`;
+      el.appendChild(div);
+    });
   }
   anim('photo-prog-fill',dur);
 }
