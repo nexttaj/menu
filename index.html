@@ -237,13 +237,11 @@ function showPhoto(img,catName,dur,side,excludeItems){
       row.innerHTML=`<div class="side-num">${num++}</div><div class="side-name">${item.name}</div><div class="side-price">${item.price?'$'+item.price:''}</div>`;
       sidePrices.appendChild(row);
     });
-    // hide bottom bar
-    document.getElementById('price-bar-title').style.display='none';
-    el.style.display='none';
+    // hide bottom bar completely
+    document.querySelector('.price-bar').style.display='none';
   } else {
     sidePanel.style.display='none';
-    document.getElementById('price-bar-title').style.display='';
-    el.style.display='';
+    document.querySelector('.price-bar').style.display='flex';
     if(cat){
       cat.items.slice(0,6).forEach((item,i)=>{
         const div=document.createElement('div');
