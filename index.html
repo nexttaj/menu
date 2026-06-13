@@ -53,6 +53,10 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#111;font-family
 .price-bar-price{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:#F7941D;margin-left:6px;}
 .photo-prog-wrap{position:absolute;top:0;left:0;right:0;height:5px;background:rgba(255,255,255,0.15);}
 .photo-prog-fill{height:100%;background:#E8602C;width:0%;transition:width linear;}
+.side-item-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+.side-num{width:40px;height:40px;background:#E8602C;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;color:#fff;flex-shrink:0;}
+.side-name{font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;color:#fff;flex:1;text-transform:uppercase;}
+.side-price{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;color:#F7941D;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -68,6 +72,12 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#111;font-family
 
 <div id="photo-view" class="view hidden">
   <div class="photo-bg" id="photo-bg"></div>
+  <!-- Side panel for prices -->
+  <div id="side-panel" style="display:none;position:absolute;top:0;bottom:60px;width:38%;background:rgba(0,0,0,0.75);flex-direction:column;justify-content:center;padding:40px 36px;">
+    <div id="side-title" style="font-family:'Oswald',sans-serif;font-size:52px;font-weight:700;color:#F7941D;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;"></div>
+    <div style="width:70px;height:4px;background:#E8602C;margin-bottom:28px;"></div>
+    <div id="side-prices"></div>
+  </div>
   <div class="price-bar">
     <div class="price-bar-title" id="price-bar-title"></div>
     <div class="price-bar-items" id="price-bar-items"></div>
@@ -80,12 +90,12 @@ const SHEET_ID='1TrMRAAE4_VLlwB35qRV-uLTTlsfYrGJWek8C3f6kUIw';
 
 const SEQ=[
   {type:'menu', page:0, dur:60000},
-  {type:'photo', img:'pic1.jpg', cat:'Kabobs', dur:15000},
+  {type:'photo', img:'pic1.jpg', cat:'Kabobs', dur:15000, side:'left', exclude:[]},
   {type:'menu', page:1, dur:15000},
   {type:'menu', page:0, dur:60000},
-  {type:'photo', img:'pic2.jpg', cat:'Kabobs', dur:15000},
+  {type:'photo', img:'pic2.jpg', cat:'Kabobs', dur:15000, side:'right', exclude:['Koobideh','Sultani']},
   {type:'menu', page:1, dur:15000},
-  {type:'photo', img:'pic3.jpg', cat:'Stew', dur:15000},
+  {type:'photo', img:'pic3.jpg', cat:'Stew', dur:15000, side:'left', exclude:['Abgoosht']},
 ];
 
 let allCats=[];
@@ -125,7 +135,7 @@ function runStep(){
   if(seqTimer)clearTimeout(seqTimer);
   const s=SEQ[seqIdx];
   if(s.type==='menu')showMenu(s.page,s.dur);
-  else showPhoto(s.img,s.cat,s.dur);
+  else showPhoto(s.img,s.cat,s.dur,s.side||null,s.exclude||[]);
   seqTimer=setTimeout(nextStep,s.dur);
 }
 
@@ -198,21 +208,50 @@ function buildCat(cat){
   return wrap;
 }
 
-function showPhoto(img,catName,dur){
+function showPhoto(img,catName,dur,side,excludeItems){
   document.getElementById('menu-view').classList.add('hidden');
   document.getElementById('photo-view').classList.remove('hidden');
   document.getElementById('photo-bg').style.backgroundImage=`url('${img}?v=${Date.now()}')`;
   document.getElementById('price-bar-title').textContent=catName;
+
   const cat=allCats.find(c=>c.name===catName);
   const el=document.getElementById('price-bar-items');
   el.innerHTML='';
-  if(cat){
-    cat.items.slice(0,6).forEach((item,i)=>{
-      const div=document.createElement('div');
-      div.className='price-bar-item';
-      div.innerHTML=`<div class="price-bar-num">${i+1}</div><div class="price-bar-name">${item.name}</div><div class="price-bar-price">${item.price?'$'+item.price:''}</div>`;
-      el.appendChild(div);
+
+  // Side panel
+  const sidePanel=document.getElementById('side-panel');
+  const sidePrices=document.getElementById('side-prices');
+  const sideTitle=document.getElementById('side-title');
+  sidePrices.innerHTML='';
+
+  if(side && cat){
+    sidePanel.style.display='flex';
+    sidePanel.style.left = side==='left' ? '0' : 'auto';
+    sidePanel.style.right = side==='right' ? '0' : 'auto';
+    sideTitle.textContent=catName;
+    let num=1;
+    cat.items.forEach(item=>{
+      if(excludeItems && excludeItems.some(e=>item.name.toLowerCase().includes(e.toLowerCase()))) return;
+      const row=document.createElement('div');
+      row.className='side-item-row';
+      row.innerHTML=`<div class="side-num">${num++}</div><div class="side-name">${item.name}</div><div class="side-price">${item.price?'$'+item.price:''}</div>`;
+      sidePrices.appendChild(row);
     });
+    // hide bottom bar
+    document.getElementById('price-bar-title').style.display='none';
+    el.style.display='none';
+  } else {
+    sidePanel.style.display='none';
+    document.getElementById('price-bar-title').style.display='';
+    el.style.display='';
+    if(cat){
+      cat.items.slice(0,6).forEach((item,i)=>{
+        const div=document.createElement('div');
+        div.className='price-bar-item';
+        div.innerHTML=`<div class="price-bar-num">${i+1}</div><div class="price-bar-name">${item.name}</div><div class="price-bar-price">${item.price?'$'+item.price:''}</div>`;
+        el.appendChild(div);
+      });
+    }
   }
   anim('photo-prog-fill',dur);
 }
